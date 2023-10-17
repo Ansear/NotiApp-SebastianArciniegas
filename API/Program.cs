@@ -1,3 +1,6 @@
+using System.Reflection;
+using API.Extensions;
+using AspNetCoreRateLimit;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +12,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddApplicationService();
+builder.Services.ConfigureRateLimit();
+builder.Services.AddAutoMapper(Assembly.GetEntryAssembly());
+
+
 builder.Services.AddDbContext<NotiAppContext>(options => 
     {
         string connectionString = builder.Configuration.GetConnectionString("MySqlConex");
@@ -22,8 +30,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
+app.UseIpRateLimiting();
 
 app.UseAuthorization();
 

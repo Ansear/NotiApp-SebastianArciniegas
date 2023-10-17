@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Interfaces;
+using Infrastructure.Data;
+using Infrastructure.Repositories;
 
 namespace Infrastructure.UnitOfWork;
 public class UnitOfWork : IUnitOfWork, IDisposable
@@ -10,7 +13,7 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     private IAuditoria _auditorias;
     private IBlockchain _blockchain;
     private IEstadoNotificacion _estadoNotificacion;
-    private IFormato _formato;
+    private IFormatos _formato;
     private IGenericosVsSubmodulos _genericosVsSubmodulos;
     private IHiloRespuestaNotificacion _hiloRespuestaNotificacion;
     private IMaestrosVsSubmodulos _maestrosVsSubmodulos;
@@ -23,125 +26,25 @@ public class UnitOfWork : IUnitOfWork, IDisposable
     private ISubmodulos _submodulos;
     private ITipoNotificaciones _tipoNotificaciones;
     private ITipoRequerimiento _tipoRequerimiento;
-    public unitOfWork(NotiAppContext context)
+    public UnitOfWork(NotiAppContext context)
     {
         _context = context;
     }
-
-    public IAuditoria Auditoria
+    public ITipoRequerimiento TipoRequerimientos 
     {
         get
         {
-            _auditorias ??= new AuditoriaRepository(_context);
-            return _auditorias;
+            _tipoRequerimiento ??= new TipoRequerimientoRepository(_context);
+            return _tipoRequerimiento;
         }
     }
 
-    public IBlockchain Blockchain
+    public ITipoNotificaciones TipoNotificaciones 
     {
         get
         {
-            _blockchain ??= new BlockchainRepository(_context);
-            return _blockchain;
-        }
-    }
-
-    public IEstadoNotificacion EstadoNotificacion
-    {
-        get
-        {
-            _estadoNotificacion ??= new EstadoNotificacionRepository(_context);
-            return _estadoNotificacion;
-        }
-    }
-
-    public IFormato Formato
-    {
-        get
-        {
-            _formato ??= new FormatosRepository(_context);
-            return _formato;
-        }
-    }
-
-    public IGenericosVsSubmodulos GenericosVsSubmodulos
-    {
-        get
-        {
-            _genericosVsSubmodulos ??= new GenericosVsSubmodulosRepository(_context);
-            return _genericosVsSubmodulos;
-        }
-    }
-
-    public IHiloRespuestaNotificacion HiloRespuestaNotificacion
-    {
-        get
-        {
-            _hiloRespuestaNotificacion ??= new HiloRespuestaNotificacionRepository(_context);
-            return _hiloRespuestaNotificacion;
-        }
-    }
-
-    public IMaestrosVsSubmodulos MaestrosVsSubmodulos
-    {
-        get
-        {
-            _maestrosVsSubmodulos ??= new MaestrosVsSubmodulosRepository(_context);
-            return _maestrosVsSubmodulos;
-        }
-    }
-
-    public IModuloNotificaciones ModuloNotificaciones
-    {
-        get
-        {
-            _moduloNotificaciones ??= new ModuloNotificacionesRepository(_context);
-            return _moduloNotificaciones;
-        }
-    }
-
-    public IModulosMaestros ModulosMaestros
-    {
-        get
-        {
-            _modulosMaestros ??= new ModulosMaestrosRepository(_context);
-            return _modulosMaestros;
-        }
-    }
-
-    public IPermisosGenericos PermisosGenericos
-    {
-        get
-        {
-            _permisosGenericos ??= new PermisosGenericosRepository(_context);
-            return _permisosGenericos;
-        }
-    }
-
-    public IRadicados Radicados
-    {
-        get
-        {
-            _radicados ??= new RadicadosRepository(_context);
-            return _radicados;
-        }
-    }
-
-    public IRol Rol
-    {
-        get
-        {
-            _rol ??= new RolRepository(_context);
-            return _rol;
-        }
-    }
-
-    public IRolVsMaestro RolVsMaestro
-    {
-        get
-        {
-            _rolVsMaestro ??= new RolVsMaestroRepository(_context);
-            return _rolVsMaestro;
+            _tipoNotificaciones ??= new TipoNotificacionesRepository(_context);
+            return _tipoNotificaciones;
         }
     }
 
@@ -154,21 +57,130 @@ public class UnitOfWork : IUnitOfWork, IDisposable
         }
     }
 
-    public ITipoNotificaciones TipoNotificaciones
+    public IRolVsMaestro RolVsMaestro
     {
         get
         {
-            _tipoNotificaciones ??= new TipoNotificacionesRepository(_context);
-            return _tipoNotificaciones;
+            _rolVsMaestro ??= new RolVsMaestroRepository(_context);
+            return _rolVsMaestro;
         }
     }
 
-    public ITipoRequerimiento TipoRequerimiento
+    public IRol Roles 
     {
         get
         {
-            _tipoRequerimiento ??= new TipoRequerimientoRepository(_context);
-            return _tipoRequerimiento;
+            _rol ??= new RolRepository(_context);
+            return _rol;
         }
+    }
+
+    public IRadicados Radicados
+    {
+        get
+        {
+            _radicados ??= new RadicadosRepository(_context);
+            return _radicados;
+        }
+    }
+
+    public IPermisosGenericos PermisosGenericos
+    {
+        get
+        {
+            _permisosGenericos ??= new PermisosGenericosRepository(_context);
+            return _permisosGenericos;
+        }
+    }
+
+    public IModulosMaestros ModulosMaestros
+    {
+        get
+        {
+            _modulosMaestros ??= new ModulosMaestrosRepository(_context);
+            return _modulosMaestros;
+        }
+    }
+
+    public IModuloNotificaciones ModuloNotificaciones
+    {
+        get
+        {
+            _moduloNotificaciones ??= new ModuloNotificacionesRepository(_context);
+            return _moduloNotificaciones;
+        }
+    }
+
+    public IMaestrosVsSubmodulos MaestrosVsSubmodulos
+    {
+        get
+        {
+            _maestrosVsSubmodulos ??= new MaestrosVsSubmodulosRepository(_context);
+            return _maestrosVsSubmodulos;
+        }
+    }
+
+    public IHiloRespuestaNotificacion HiloRespuestaNotificacion
+    {
+        get
+        {
+            _hiloRespuestaNotificacion ??= new HiloRespuestaNotificacionRepository(_context);
+            return _hiloRespuestaNotificacion;
+        }
+    }
+
+    public IGenericosVsSubmodulos GenericosVsSubmodulos
+    {
+        get
+        {
+            _genericosVsSubmodulos ??= new GenericosVsSubmodulosRepository(_context);
+            return _genericosVsSubmodulos;
+        }
+    }
+
+    public IFormatos Formatos
+    {
+        get
+        {
+            _formato ??= new FormatosRepository(_context);
+            return _formato;
+        }
+    }
+
+    public IEstadoNotificacion EstadoNotificacion
+    {
+        get
+        {
+            _estadoNotificacion ??= new EstadoNotificacionRepository(_context);
+            return _estadoNotificacion;
+        }
+    }
+
+    public IBlockchain Blockchain 
+    {
+        get
+        {
+            _blockchain ??= new BlockchainRepository(_context);
+            return _blockchain;
+        }
+    }
+
+    public IAuditoria Auditoria 
+    {
+        get
+        {
+            _auditorias ??= new AuditoriaRepository(_context);
+            return _auditorias;
+        }
+    }
+
+    public void Dispose()
+    {
+        _context.Dispose();
+    }
+
+    public Task<int> SaveAsync()
+    {
+        return _context.SaveChangesAsync();
     }
 }
