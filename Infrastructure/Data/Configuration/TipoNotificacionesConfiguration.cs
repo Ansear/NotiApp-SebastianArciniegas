@@ -1,18 +1,22 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Data.Configuration;
-public class RolConfiguration : IEntityTypeConfiguration<Rol>
+public class TipoNotificacionesConfiguration : IEntityTypeConfiguration<TipoNotificaciones>
 {
-    public void Configure(EntityTypeBuilder<Rol> builder)
+    public void Configure(EntityTypeBuilder<TipoNotificaciones> builder)
     {
-        builder.ToTable("Rol");
+        builder.ToTable("TipoNotificaciones");
 
         builder.HasKey(r => r.Id);
         builder.Property(r => r.Id);
 
-        builder.Property(r => r.Nombre).IsRequired().HasMaxLength(100);
+        builder.Property(r => r.NombreTipo).HasMaxLength(80);
 
         builder.Property(r => r.FechaCreacion).HasColumnType("date");
 

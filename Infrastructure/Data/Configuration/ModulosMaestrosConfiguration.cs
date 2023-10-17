@@ -13,7 +13,7 @@ public class ModulosMaestrosConfiguration : IEntityTypeConfiguration<ModulosMaes
         builder.HasKey(mm => mm.Id);
         builder.Property(mm => mm.Id);
 
-        builder.Property(mm => mm.NombreModulo);
+        builder.Property(mm => mm.NombreModulo).HasMaxLength(100);
 
         builder.Property(mm => mm.FechaCreacion).HasColumnType("date");
 

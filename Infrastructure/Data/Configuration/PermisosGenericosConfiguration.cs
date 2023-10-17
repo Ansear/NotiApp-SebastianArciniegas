@@ -16,7 +16,7 @@ public class PermisosGenericosConfiguration : IEntityTypeConfiguration<PermisosG
         builder.HasKey(pg => pg.Id);
         builder.Property(pg => pg.Id);
 
-        builder.Property(pg => pg.NombrePermiso);
+        builder.Property(pg => pg.NombrePermiso).HasMaxLength(50);
 
         builder.Property(pg => pg.FechaCreacion).HasColumnType("date");
 

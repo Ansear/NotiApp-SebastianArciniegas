@@ -16,7 +16,7 @@ public class SubModulosConfiguration : IEntityTypeConfiguration<Submodulos>
         builder.HasKey(sm => sm.Id);
         builder.Property(sm => sm.Id);
 
-        builder.Property(sm => sm.NombreSubModulo);
+        builder.Property(sm => sm.NombreSubModulo).HasMaxLength(80);
 
         builder.Property(sm => sm.FechaCreacion).HasColumnType("date");
 
