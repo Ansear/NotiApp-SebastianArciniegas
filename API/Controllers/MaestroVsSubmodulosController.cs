@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using API.Dtos;
 using AutoMapper;
 using Core.Entities;
@@ -23,28 +22,28 @@ public class MaestroVsSubmodulosController : BaseController
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<IEnumerable<MaestroVsSubmodulosDto>>> Get()
+    public async Task<ActionResult<IEnumerable<MaestrosVsSubmodulosDto>>> Get()
     {
         var maestro = await _unitOfWork.MaestrosVsSubmodulos.GetAllAsync();
-        return _mapper.Map<List<MaestroVsSubmodulosDto>>(maestro);
+        return _mapper.Map<List<MaestrosVsSubmodulosDto>>(maestro);
     }
 
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<MaestroVsSubmodulosDto>> Get(int id)
+    public async Task<ActionResult<MaestrosVsSubmodulosDto>> Get(int id)
     {
         var maestro = await _unitOfWork.MaestrosVsSubmodulos.GetByIdAsync(id);
         if(maestro == null)
             return NotFound();
-        return _mapper.Map<MaestroVsSubmodulosDto>(maestro);
+        return _mapper.Map<MaestrosVsSubmodulosDto>(maestro);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<MaestrosVsSubmodulos>> Post([FromBody] MaestroVsSubmodulosDto maestroVsSubmodulosDto)
+    public async Task<ActionResult<MaestrosVsSubmodulos>> Post([FromBody] MaestrosVsSubmodulosDto maestroVsSubmodulosDto)
     {
         var maestro = _mapper.Map<MaestrosVsSubmodulos>(maestroVsSubmodulosDto);
         _unitOfWork.MaestrosVsSubmodulos.Add(maestro);
@@ -59,7 +58,7 @@ public class MaestroVsSubmodulosController : BaseController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<MaestroVsSubmodulosDto>> Put(int id, [FromBody] MaestroVsSubmodulosDto maestroVsSubmodulosDto)
+    public async Task<ActionResult<MaestrosVsSubmodulosDto>> Put(int id, [FromBody] MaestrosVsSubmodulosDto maestroVsSubmodulosDto)
     {
         if(maestroVsSubmodulosDto == null)
             return BadRequest();

@@ -18,7 +18,7 @@ namespace API.Profiles;
             CreateMap<Formatos, FormatosDto>().ReverseMap();
             CreateMap<GenericosVsSubmodulos, GenericosVsSubmodulosDto>().ReverseMap();
             CreateMap<HiloRespuestaNotificacion, HiloRespuestaNotificacionDto>().ReverseMap();
-            CreateMap<MaestrosVsSubmodulos, MaestroVsSubmodulosDto>().ReverseMap();
+            CreateMap<MaestrosVsSubmodulos, ModuloNotificacionesDto>().ReverseMap();
             CreateMap<ModuloNotificaciones, ModuloNotificacionesDto>().ReverseMap();
             CreateMap<ModulosMaestros, ModulosMaestrosDto>().ReverseMap();
             CreateMap<PermisosGenericos, PermisosGenericosDto>().ReverseMap();
