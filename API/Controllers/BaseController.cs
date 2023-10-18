@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 [ApiController]
-[Route("api/notiapp[controller]")]
+[Route("api/notiapp/[controller]")]
 public class BaseController : ControllerBase
 {
 
