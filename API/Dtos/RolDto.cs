@@ -8,6 +8,6 @@ public class RolDto
 {
     public int Id { get; set; }
     public string Nombre { get; set; }
-    public DateOnly FechaCreacion { get; set; }
-    public DateOnly FechaModificacion { get; set; }
+    public DateTime FechaCreacion { get; set; }
+    public DateTime FechaModificacion { get; set; }
 }

@@ -47,6 +47,16 @@ public class RolController : BaseController
     public async Task<ActionResult<RolDto>> Post([FromBody] RolDto rolDto)
     {
         var rol = _mapper.Map<Rol>(rolDto);
+        if (rol.FechaCreacion == DateTime.MinValue)
+        {
+            rol.FechaCreacion = DateTime.Now;
+            rolDto.FechaCreacion = DateTime.Now;
+        }
+        if (rol.FechaModificacion == DateTime.MinValue)
+        {
+            rol.FechaModificacion = DateTime.Now;
+            rolDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.Roles.Add(rol);
         await _unitOfWork.SaveAsync();
         if (rol == null)

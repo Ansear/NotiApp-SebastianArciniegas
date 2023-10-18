@@ -48,6 +48,16 @@ public class AuditoriaController : BaseController
     public async Task<ActionResult<Auditoria>> Post([FromBody] AuditoriaDto auditoriaDto)
     {
         var auditoria = _mapper.Map<Auditoria>(auditoriaDto);
+         if (auditoria.FechaCreacion == DateTime.MinValue)
+        {
+            auditoria.FechaCreacion = DateTime.Now;
+            auditoriaDto.FechaCreacion = DateTime.Now;
+        }
+        if (auditoria.FechaModificacion == DateTime.MinValue)
+        {
+            auditoria.FechaModificacion = DateTime.Now;
+            auditoriaDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.Auditoria.Add(auditoria);
         await _unitOfWork.SaveAsync();
         if(auditoria == null)
@@ -62,13 +72,23 @@ public class AuditoriaController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<AuditoriaDto>> Put(int id, [FromBody] AuditoriaDto auditoriaDto)
     {
+        var auditoria = _mapper.Map<Auditoria>(auditoriaDto);
         if(auditoriaDto == null)
             return BadRequest();
         if(auditoriaDto.Id == 0)
             auditoriaDto.Id = id;
         if(auditoriaDto.Id != id)
             return NotFound();
-        var auditoria = _mapper.Map<Auditoria>(auditoriaDto);
+        if (auditoria.FechaCreacion == DateTime.MinValue)
+        {
+            auditoria.FechaCreacion = DateTime.Now;
+            auditoriaDto.FechaCreacion = DateTime.Now;
+        }
+        if (auditoria.FechaModificacion == DateTime.MinValue)
+        {
+            auditoria.FechaModificacion = DateTime.Now;
+            auditoriaDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.Auditoria.Add(auditoria);
         await _unitOfWork.SaveAsync();
         return auditoriaDto;

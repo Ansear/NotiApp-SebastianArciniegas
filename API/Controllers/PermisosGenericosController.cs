@@ -47,6 +47,16 @@ public class PermisosGenericosController : BaseController
     public async Task<ActionResult<PermisosGenericosDto>> Post([FromBody] PermisosGenericosDto permisosGenericosDto)
     {
         var permiso = _mapper.Map<PermisosGenericos>(permisosGenericosDto);
+        if (permiso.FechaCreacion == DateTime.MinValue)
+        {
+            permiso.FechaCreacion = DateTime.Now;
+            permisosGenericosDto.FechaCreacion = DateTime.Now;
+        }
+        if (permiso.FechaModificacion == DateTime.MinValue)
+        {
+            permiso.FechaModificacion = DateTime.Now;
+            permisosGenericosDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.PermisosGenericos.Add(permiso);
         await _unitOfWork.SaveAsync();
         if (permiso == null)
@@ -61,13 +71,23 @@ public class PermisosGenericosController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<PermisosGenericosDto>> Put(int id, [FromBody] PermisosGenericosDto permisosGenericosDto)
     {
+        var permiso = _mapper.Map<PermisosGenericos>(permisosGenericosDto);
         if (permisosGenericosDto == null)
             return BadRequest();
         if (permisosGenericosDto.Id == 0)
             permisosGenericosDto.Id = id;
         if (permisosGenericosDto.Id != id)
             return NotFound();
-        var permiso = _mapper.Map<PermisosGenericos>(permisosGenericosDto);
+        if (permiso.FechaCreacion == DateTime.MinValue)
+        {
+            permiso.FechaCreacion = DateTime.Now;
+            permisosGenericosDto.FechaCreacion = DateTime.Now;
+        }
+        if (permiso.FechaModificacion == DateTime.MinValue)
+        {
+            permiso.FechaModificacion = DateTime.Now;
+            permisosGenericosDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.PermisosGenericos.Update(permiso);
         await _unitOfWork.SaveAsync();
         return permisosGenericosDto;

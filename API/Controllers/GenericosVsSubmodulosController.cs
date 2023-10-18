@@ -36,7 +36,7 @@ public class GenericosVsSubmodulosController : BaseController
     public async Task<ActionResult<GenericosVsSubmodulosDto>> Get(int id)
     {
         var genericos = await _unitOfWork.GenericosVsSubmodulos.GetByIdAsync(id);
-        if(genericos ==null)
+        if (genericos == null)
             return NotFound();
         return _mapper.Map<GenericosVsSubmodulosDto>(genericos);
     }
@@ -47,12 +47,22 @@ public class GenericosVsSubmodulosController : BaseController
     public async Task<ActionResult<GenericosVsSubmodulos>> Post([FromBody] GenericosVsSubmodulosDto genericosDto)
     {
         var genericos = _mapper.Map<GenericosVsSubmodulos>(genericosDto);
+        if (genericos.FechaCreacion == DateTime.MinValue)
+        {
+            genericos.FechaCreacion = DateTime.Now;
+            genericosDto.FechaCreacion = DateTime.Now;
+        }
+        if (genericos.FechaModificacion == DateTime.MinValue)
+        {
+            genericos.FechaModificacion = DateTime.Now;
+            genericosDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.GenericosVsSubmodulos.Add(genericos);
         await _unitOfWork.SaveAsync();
-        if(genericosDto == null)
+        if (genericosDto == null)
             return BadRequest();
         genericosDto.Id = genericos.Id;
-        return CreatedAtAction(nameof(Post), new {Id = genericosDto.Id}, genericosDto);
+        return CreatedAtAction(nameof(Post), new { Id = genericosDto.Id }, genericosDto);
     }
 
     [HttpPut("{id}")]
@@ -61,13 +71,23 @@ public class GenericosVsSubmodulosController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<GenericosVsSubmodulosDto>> Put(int id, [FromBody] GenericosVsSubmodulosDto genericosDto)
     {
-        if(genericosDto == null)
-            return BadRequest();
-        if(genericosDto.Id == 0)
-            genericosDto.Id = id;
-        if(genericosDto.Id != id)
-            return BadRequest();
         var genericos = _mapper.Map<GenericosVsSubmodulos>(genericosDto);
+        if (genericosDto == null)
+            return BadRequest();
+        if (genericosDto.Id == 0)
+            genericosDto.Id = id;
+        if (genericosDto.Id != id)
+            return BadRequest();
+        if (genericos.FechaCreacion == DateTime.MinValue)
+        {
+            genericos.FechaCreacion = DateTime.Now;
+            genericosDto.FechaCreacion = DateTime.Now;
+        }
+        if (genericos.FechaModificacion == DateTime.MinValue)
+        {
+            genericos.FechaModificacion = DateTime.Now;
+            genericosDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.GenericosVsSubmodulos.Update(genericos);
         await _unitOfWork.SaveAsync();
         return genericosDto;
@@ -80,7 +100,7 @@ public class GenericosVsSubmodulosController : BaseController
     public async Task<IActionResult> Delete(int id)
     {
         var genericos = await _unitOfWork.GenericosVsSubmodulos.GetByIdAsync(id);
-        if(genericos == null)
+        if (genericos == null)
             return BadRequest();
         _unitOfWork.GenericosVsSubmodulos.Remove(genericos);
         await _unitOfWork.SaveAsync();

@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using API.Dtos;
 using AutoMapper;
 using Core.Entities;
@@ -20,6 +16,7 @@ public class TipoRequerimientoController : BaseController
         _mapper = mapper;
     }
 
+    [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IEnumerable<TipoRequerimientoDto>>> Get()
@@ -46,6 +43,16 @@ public class TipoRequerimientoController : BaseController
     public async Task<ActionResult<TipoRequerimientoDto>> Post([FromBody] TipoRequerimientoDto tipoRequerimientoDto)
     {
         var tipo = _mapper.Map<TipoRequerimiento>(tipoRequerimientoDto);
+        if (tipo.FechaCreacion == DateTime.MinValue)
+        {
+            tipo.FechaCreacion = DateTime.Now;
+            tipoRequerimientoDto.FechaCreacion = DateTime.Now;
+        }
+        if (tipo.FechaModificacion == DateTime.MinValue)
+        {
+            tipo.FechaModificacion = DateTime.Now;
+            tipoRequerimientoDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.TipoRequerimientos.Add(tipo);
         await _unitOfWork.SaveAsync();
         if (tipo == null)
@@ -60,13 +67,26 @@ public class TipoRequerimientoController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<TipoRequerimientoDto>> Put(int id, [FromBody] TipoRequerimientoDto tipoRequerimientoDto)
     {
+        var tipo = _mapper.Map<TipoRequerimiento>(tipoRequerimientoDto);
         if (tipoRequerimientoDto == null)
             return BadRequest();
+
         if (tipoRequerimientoDto.Id == 0)
             tipoRequerimientoDto.Id = id;
+            
         if (tipoRequerimientoDto.Id != id)
             return NotFound();
-        var tipo = _mapper.Map<TipoRequerimiento>(tipoRequerimientoDto);
+
+        if (tipo.FechaCreacion == DateTime.MinValue)
+        {
+            tipo.FechaCreacion = DateTime.Now;
+            tipoRequerimientoDto.FechaCreacion = DateTime.Now;
+        }
+        if (tipo.FechaModificacion == DateTime.MinValue)
+        {
+            tipo.FechaModificacion = DateTime.Now;
+            tipoRequerimientoDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.TipoRequerimientos.Update(tipo);
         await _unitOfWork.SaveAsync();
         return tipoRequerimientoDto;

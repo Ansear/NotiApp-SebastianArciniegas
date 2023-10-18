@@ -47,6 +47,16 @@ public class FormatosController : BaseController
     public async Task<ActionResult<Formatos>> Post([FromBody] FormatosDto formatosDto)
     {
         var formato = _mapper.Map<Formatos>(formatosDto);
+        if (formato.FechaCreacion == DateTime.MinValue)
+        {
+            formato.FechaCreacion = DateTime.Now;
+            formatosDto.FechaCreacion = DateTime.Now;
+        }
+        if (formato.FechaModificacion == DateTime.MinValue)
+        {
+            formato.FechaModificacion = DateTime.Now;
+            formatosDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.Formatos.Add(formato);
         await _unitOfWork.SaveAsync();
         if(formato == null)
@@ -61,13 +71,23 @@ public class FormatosController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<FormatosDto>> Put(int id, [FromBody] FormatosDto formatosDto)
     {
+        var formato = _mapper.Map<Formatos>(formatosDto);
         if(formatosDto == null)
             return BadRequest();
         if(formatosDto.Id == 0)
             formatosDto.Id = id;
         if(formatosDto.Id != id)
             return NotFound();
-        var formato = _mapper.Map<Formatos>(formatosDto);
+        if (formato.FechaCreacion == DateTime.MinValue)
+        {
+            formato.FechaCreacion = DateTime.Now;
+            formatosDto.FechaCreacion = DateTime.Now;
+        }
+        if (formato.FechaModificacion == DateTime.MinValue)
+        {
+            formato.FechaModificacion = DateTime.Now;
+            formatosDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.Formatos.Update(formato);
         await _unitOfWork.SaveAsync();
         return formatosDto;

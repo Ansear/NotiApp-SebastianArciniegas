@@ -36,7 +36,7 @@ public class ModuloNotificacionesController : BaseController
     public async Task<ActionResult<ModuloNotificacionesDto>> Get(int id)
     {
         var modulo = await _unitOfWork.ModuloNotificaciones.GetByIdAsync(id);
-        if(modulo == null)
+        if (modulo == null)
             return NotFound();
         return _mapper.Map<ModuloNotificacionesDto>(modulo);
     }
@@ -47,12 +47,22 @@ public class ModuloNotificacionesController : BaseController
     public async Task<ActionResult<ModuloNotificaciones>> Post([FromBody] ModuloNotificacionesDto moduloNotificacionesDto)
     {
         var modulo = _mapper.Map<ModuloNotificaciones>(moduloNotificacionesDto);
+        if (modulo.FechaCreacion == DateTime.MinValue)
+        {
+            modulo.FechaCreacion = DateTime.Now;
+            moduloNotificacionesDto.FechaCreacion = DateTime.Now;
+        }
+        if (modulo.FechaModificacion == DateTime.MinValue)
+        {
+            modulo.FechaModificacion = DateTime.Now;
+            moduloNotificacionesDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.ModuloNotificaciones.Add(modulo);
         await _unitOfWork.SaveAsync();
-        if(modulo == null)
+        if (modulo == null)
             return BadRequest();
         moduloNotificacionesDto.Id = modulo.Id;
-        return CreatedAtAction(nameof(Post), new {Id = moduloNotificacionesDto.Id}, moduloNotificacionesDto);
+        return CreatedAtAction(nameof(Post), new { Id = moduloNotificacionesDto.Id }, moduloNotificacionesDto);
     }
 
     [HttpPut("{id}")]
@@ -61,13 +71,23 @@ public class ModuloNotificacionesController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ModuloNotificacionesDto>> Put(int id, [FromBody] ModuloNotificacionesDto moduloNotificacionesDto)
     {
-        if(moduloNotificacionesDto == null)
-            return BadRequest();
-        if(moduloNotificacionesDto.Id == 0)
-            moduloNotificacionesDto.Id = id;
-        if(moduloNotificacionesDto.Id != id)
-            return NotFound();
         var modulo = _mapper.Map<ModuloNotificaciones>(moduloNotificacionesDto);
+        if (moduloNotificacionesDto == null)
+            return BadRequest();
+        if (moduloNotificacionesDto.Id == 0)
+            moduloNotificacionesDto.Id = id;
+        if (moduloNotificacionesDto.Id != id)
+            return NotFound();
+        if (modulo.FechaCreacion == DateTime.MinValue)
+        {
+            modulo.FechaCreacion = DateTime.Now;
+            moduloNotificacionesDto.FechaCreacion = DateTime.Now;
+        }
+        if (modulo.FechaModificacion == DateTime.MinValue)
+        {
+            modulo.FechaModificacion = DateTime.Now;
+            moduloNotificacionesDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.ModuloNotificaciones.Update(modulo);
         await _unitOfWork.SaveAsync();
         return moduloNotificacionesDto;
@@ -80,7 +100,7 @@ public class ModuloNotificacionesController : BaseController
     public async Task<IActionResult> Delete(int id)
     {
         var modulo = await _unitOfWork.ModuloNotificaciones.GetByIdAsync(id);
-        if(modulo == null)
+        if (modulo == null)
             return NotFound();
         _unitOfWork.ModuloNotificaciones.Remove(modulo);
         await _unitOfWork.SaveAsync();

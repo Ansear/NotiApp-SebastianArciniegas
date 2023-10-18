@@ -46,6 +46,16 @@ public class HiloRespuestaNotificacionController : BaseController
     public async Task<ActionResult<HiloRespuestaNotificacion>> Post([FromBody] HiloRespuestaNotificacionDto hiloDto)
     {
         var hilo = _mapper.Map<HiloRespuestaNotificacion>(hiloDto);
+        if (hilo.FechaCreacion == DateTime.MinValue)
+        {
+            hilo.FechaCreacion = DateTime.Now;
+            hiloDto.FechaCreacion = DateTime.Now;
+        }
+        if (hilo.FechaModificacion == DateTime.MinValue)
+        {
+            hilo.FechaModificacion = DateTime.Now;
+            hiloDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.HiloRespuestaNotificacion.Add(hilo);
         await _unitOfWork.SaveAsync();
         if(hilo == null)
@@ -60,13 +70,23 @@ public class HiloRespuestaNotificacionController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<HiloRespuestaNotificacionDto>> Put(int id, [FromBody] HiloRespuestaNotificacionDto hiloDto)
     {
+        var hilo = _mapper.Map<HiloRespuestaNotificacion>(hiloDto);
         if(hiloDto == null)
             return BadRequest();
         if(hiloDto.Id == 0)
             hiloDto.Id = id;
         if(hiloDto.Id != id)
             return NotFound();
-        var hilo = _mapper.Map<HiloRespuestaNotificacion>(hiloDto);
+        if (hilo.FechaCreacion == DateTime.MinValue)
+        {
+            hilo.FechaCreacion = DateTime.Now;
+            hiloDto.FechaCreacion = DateTime.Now;
+        }
+        if (hilo.FechaModificacion == DateTime.MinValue)
+        {
+            hilo.FechaModificacion = DateTime.Now;
+            hiloDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.HiloRespuestaNotificacion.Update(hilo);
         await _unitOfWork.SaveAsync();
         return hiloDto;

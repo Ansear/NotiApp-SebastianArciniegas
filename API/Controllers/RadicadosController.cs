@@ -47,6 +47,16 @@ public class RadicadosController : BaseController
     public async Task<ActionResult<RadicadosDto>> Post([FromBody] RadicadosDto radicadosDto)
     {
         var radicado = _mapper.Map<Radicados>(radicadosDto);
+        if (radicado.FechaCreacion == DateTime.MinValue)
+        {
+            radicado.FechaCreacion = DateTime.Now;
+            radicadosDto.FechaCreacion = DateTime.Now;
+        }
+        if (radicado.FechaModificacion == DateTime.MinValue)
+        {
+            radicado.FechaModificacion = DateTime.Now;
+            radicadosDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.Radicados.Add(radicado);
         await _unitOfWork.SaveAsync();
         if (radicado == null)
@@ -61,13 +71,23 @@ public class RadicadosController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<RadicadosDto>> Put(int id, [FromBody] RadicadosDto radicadosDto)
     {
+        var radicado = _mapper.Map<Radicados>(radicadosDto);
         if (radicadosDto == null)
             return BadRequest();
         if (radicadosDto.Id == 0)
             radicadosDto.Id = id;
         if (radicadosDto.Id != id)
             return NotFound();
-        var radicado = _mapper.Map<Radicados>(radicadosDto);
+        if (radicado.FechaCreacion == DateTime.MinValue)
+        {
+            radicado.FechaCreacion = DateTime.Now;
+            radicadosDto.FechaCreacion = DateTime.Now;
+        }
+        if (radicado.FechaModificacion == DateTime.MinValue)
+        {
+            radicado.FechaModificacion = DateTime.Now;
+            radicadosDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.Radicados.Update(radicado);
         await _unitOfWork.SaveAsync();
         return radicadosDto;

@@ -36,7 +36,7 @@ public class ModulosMaestrosController : BaseController
     public async Task<ActionResult<ModulosMaestrosDto>> Get(int id)
     {
         var modulo = await _unitOfWork.ModulosMaestros.GetByIdAsync(id);
-        if(modulo == null)
+        if (modulo == null)
             return NotFound();
         return _mapper.Map<ModulosMaestrosDto>(modulo);
     }
@@ -47,12 +47,22 @@ public class ModulosMaestrosController : BaseController
     public async Task<ActionResult<ModulosMaestrosDto>> Post([FromBody] ModulosMaestrosDto modulosMaestrosDto)
     {
         var modulo = _mapper.Map<ModulosMaestros>(modulosMaestrosDto);
+        if (modulo.FechaCreacion == DateTime.MinValue)
+        {
+            modulo.FechaCreacion = DateTime.Now;
+            modulosMaestrosDto.FechaCreacion = DateTime.Now;
+        }
+        if (modulo.FechaModificacion == DateTime.MinValue)
+        {
+            modulo.FechaModificacion = DateTime.Now;
+            modulosMaestrosDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.ModulosMaestros.Add(modulo);
         await _unitOfWork.SaveAsync();
-        if(modulo == null)
+        if (modulo == null)
             return BadRequest();
         modulosMaestrosDto.Id = modulo.Id;
-        return CreatedAtAction(nameof(Post), new {Id = modulosMaestrosDto.Id}, modulosMaestrosDto);
+        return CreatedAtAction(nameof(Post), new { Id = modulosMaestrosDto.Id }, modulosMaestrosDto);
     }
 
     [HttpPut("{id}")]
@@ -61,13 +71,23 @@ public class ModulosMaestrosController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ModulosMaestrosDto>> Put(int id, [FromBody] ModulosMaestrosDto modulosMaestrosDto)
     {
-        if(modulosMaestrosDto == null)
-            return BadRequest();
-        if(modulosMaestrosDto.Id == 0)
-            modulosMaestrosDto.Id = id;
-        if(modulosMaestrosDto.Id != id)
-            return NotFound();
         var modulo = _mapper.Map<ModulosMaestros>(modulosMaestrosDto);
+        if (modulosMaestrosDto == null)
+            return BadRequest();
+        if (modulosMaestrosDto.Id == 0)
+            modulosMaestrosDto.Id = id;
+        if (modulosMaestrosDto.Id != id)
+            return NotFound();
+        if (modulo.FechaCreacion == DateTime.MinValue)
+        {
+            modulo.FechaCreacion = DateTime.Now;
+            modulosMaestrosDto.FechaCreacion = DateTime.Now;
+        }
+        if (modulo.FechaModificacion == DateTime.MinValue)
+        {
+            modulo.FechaModificacion = DateTime.Now;
+            modulosMaestrosDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.ModulosMaestros.Update(modulo);
         await _unitOfWork.SaveAsync();
         return modulosMaestrosDto;
@@ -80,7 +100,7 @@ public class ModulosMaestrosController : BaseController
     public async Task<IActionResult> Delete(int id)
     {
         var modulo = await _unitOfWork.ModulosMaestros.GetByIdAsync(id);
-        if(modulo == null)
+        if (modulo == null)
             return NotFound();
         _unitOfWork.ModulosMaestros.Remove(modulo);
         await _unitOfWork.SaveAsync();

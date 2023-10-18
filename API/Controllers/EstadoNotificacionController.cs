@@ -47,6 +47,16 @@ public class EstadoNotificacionController : BaseController
     public async Task<ActionResult<EstadoNotificacion>> Post([FromBody] EstadoNotificacionDto estadoNotificacionDto)
     {
         var estado = _mapper.Map<EstadoNotificacion>(estadoNotificacionDto);
+        if (estado.FechaCreacion == DateTime.MinValue)
+        {
+            estado.FechaCreacion = DateTime.Now;
+            estadoNotificacionDto.FechaCreacion = DateTime.Now;
+        }
+        if (estado.FechaModificacion == DateTime.MinValue)
+        {
+            estado.FechaModificacion = DateTime.Now;
+            estadoNotificacionDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.EstadoNotificacion.Add(estado);
         await _unitOfWork.SaveAsync();
         if (estadoNotificacionDto == null)
@@ -61,13 +71,23 @@ public class EstadoNotificacionController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<EstadoNotificacionDto>> Put(int id, [FromBody] EstadoNotificacionDto estadoNotificacionDto)
     {
+        var estado = _mapper.Map<EstadoNotificacion>(estadoNotificacionDto);
         if (estadoNotificacionDto == null)
             return BadRequest();
         if (estadoNotificacionDto.Id == 0)
             estadoNotificacionDto.Id = id;
         if (estadoNotificacionDto.Id != id)
             return NotFound();
-        var estado = _mapper.Map<EstadoNotificacion>(estadoNotificacionDto);
+        if (estado.FechaCreacion == DateTime.MinValue)
+        {
+            estado.FechaCreacion = DateTime.Now;
+            estadoNotificacionDto.FechaCreacion = DateTime.Now;
+        }
+        if (estado.FechaModificacion == DateTime.MinValue)
+        {
+            estado.FechaModificacion = DateTime.Now;
+            estadoNotificacionDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.EstadoNotificacion.Update(estado);
         await _unitOfWork.SaveAsync();
         return estadoNotificacionDto;

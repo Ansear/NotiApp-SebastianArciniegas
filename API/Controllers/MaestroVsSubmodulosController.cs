@@ -35,7 +35,7 @@ public class MaestroVsSubmodulosController : BaseController
     public async Task<ActionResult<MaestrosVsSubmodulosDto>> Get(int id)
     {
         var maestro = await _unitOfWork.MaestrosVsSubmodulos.GetByIdAsync(id);
-        if(maestro == null)
+        if (maestro == null)
             return NotFound();
         return _mapper.Map<MaestrosVsSubmodulosDto>(maestro);
     }
@@ -46,12 +46,22 @@ public class MaestroVsSubmodulosController : BaseController
     public async Task<ActionResult<MaestrosVsSubmodulos>> Post([FromBody] MaestrosVsSubmodulosDto maestroVsSubmodulosDto)
     {
         var maestro = _mapper.Map<MaestrosVsSubmodulos>(maestroVsSubmodulosDto);
+        if (maestro.FechaCreacion == DateTime.MinValue)
+        {
+            maestro.FechaCreacion = DateTime.Now;
+            maestroVsSubmodulosDto.FechaCreacion = DateTime.Now;
+        }
+        if (maestro.FechaModificacion == DateTime.MinValue)
+        {
+            maestro.FechaModificacion = DateTime.Now;
+            maestroVsSubmodulosDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.MaestrosVsSubmodulos.Add(maestro);
         await _unitOfWork.SaveAsync();
-        if(maestro == null)
+        if (maestro == null)
             return BadRequest();
         maestroVsSubmodulosDto.Id = maestro.Id;
-        return CreatedAtAction(nameof(Post), new {Id = maestroVsSubmodulosDto.Id}, maestroVsSubmodulosDto);
+        return CreatedAtAction(nameof(Post), new { Id = maestroVsSubmodulosDto.Id }, maestroVsSubmodulosDto);
     }
 
     [HttpPut("{id}")]
@@ -60,13 +70,23 @@ public class MaestroVsSubmodulosController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<MaestrosVsSubmodulosDto>> Put(int id, [FromBody] MaestrosVsSubmodulosDto maestroVsSubmodulosDto)
     {
-        if(maestroVsSubmodulosDto == null)
-            return BadRequest();
-        if(maestroVsSubmodulosDto.Id == 0)
-            maestroVsSubmodulosDto.Id = id;
-        if(maestroVsSubmodulosDto.Id != id)
-            return NotFound();
         var maestro = _mapper.Map<MaestrosVsSubmodulos>(maestroVsSubmodulosDto);
+        if (maestroVsSubmodulosDto == null)
+            return BadRequest();
+        if (maestroVsSubmodulosDto.Id == 0)
+            maestroVsSubmodulosDto.Id = id;
+        if (maestroVsSubmodulosDto.Id != id)
+            return NotFound();
+        if (maestro.FechaCreacion == DateTime.MinValue)
+        {
+            maestro.FechaCreacion = DateTime.Now;
+            maestroVsSubmodulosDto.FechaCreacion = DateTime.Now;
+        }
+        if (maestro.FechaModificacion == DateTime.MinValue)
+        {
+            maestro.FechaModificacion = DateTime.Now;
+            maestroVsSubmodulosDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.MaestrosVsSubmodulos.Update(maestro);
         await _unitOfWork.SaveAsync();
         return maestroVsSubmodulosDto;
@@ -79,7 +99,7 @@ public class MaestroVsSubmodulosController : BaseController
     public async Task<IActionResult> Delete(int id)
     {
         var maestro = await _unitOfWork.MaestrosVsSubmodulos.GetByIdAsync(id);
-        if(maestro == null)
+        if (maestro == null)
             return NotFound();
         _unitOfWork.MaestrosVsSubmodulos.Remove(maestro);
         await _unitOfWork.SaveAsync();

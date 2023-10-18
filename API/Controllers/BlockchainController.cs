@@ -32,7 +32,7 @@ public class BlockchainController : BaseController
     public async Task<ActionResult<BlockchainDto>> Get(int id)
     {
         var blockchain = await _unitOfWork.Blockchain.GetByIdAsync(id);
-        if(blockchain == null)
+        if (blockchain == null)
             return NotFound();
         return _mapper.Map<BlockchainDto>(blockchain);
     }
@@ -43,14 +43,24 @@ public class BlockchainController : BaseController
     public async Task<ActionResult<Blockchain>> Post([FromBody] BlockchainDto blockchainDto)
     {
         var blockchain = _mapper.Map<Blockchain>(blockchainDto);
+        if (blockchain.FechaCreacion == DateTime.MinValue)
+        {
+            blockchain.FechaCreacion = DateTime.Now;
+            blockchainDto.FechaCreacion = DateTime.Now;
+        }
+        if (blockchain.FechaModificacion == DateTime.MinValue)
+        {
+            blockchain.FechaModificacion = DateTime.Now;
+            blockchainDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.Blockchain.Add(blockchain);
         await _unitOfWork.SaveAsync();
-        if(blockchain == null)
+        if (blockchain == null)
         {
             return BadRequest();
         }
         blockchainDto.Id = blockchain.Id;
-        return CreatedAtAction(nameof(Post), new {Id = blockchainDto.Id}, blockchainDto);
+        return CreatedAtAction(nameof(Post), new { Id = blockchainDto.Id }, blockchainDto);
     }
 
     [HttpPut("{id}")]
@@ -59,13 +69,23 @@ public class BlockchainController : BaseController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<BlockchainDto>> Put(int id, [FromBody] BlockchainDto blockchainDto)
     {
-        if(blockchainDto == null)
-            return BadRequest();
-        if(blockchainDto.Id == 0)
-            blockchainDto.Id = id;
-        if(blockchainDto.Id != id)
-            return NotFound();
         var blockchain = _mapper.Map<Blockchain>(blockchainDto);
+        if (blockchainDto == null)
+            return BadRequest();
+        if (blockchainDto.Id == 0)
+            blockchainDto.Id = id;
+        if (blockchainDto.Id != id)
+            return NotFound();
+        if (blockchain.FechaCreacion == DateTime.MinValue)
+        {
+            blockchain.FechaCreacion = DateTime.Now;
+            blockchainDto.FechaCreacion = DateTime.Now;
+        }
+        if (blockchain.FechaModificacion == DateTime.MinValue)
+        {
+            blockchain.FechaModificacion = DateTime.Now;
+            blockchainDto.FechaModificacion = DateTime.Now;
+        }
         _unitOfWork.Blockchain.Add(blockchain);
         await _unitOfWork.SaveAsync();
         return blockchainDto;
@@ -78,7 +98,7 @@ public class BlockchainController : BaseController
     public async Task<IActionResult> Delete(int id)
     {
         var blockchain = await _unitOfWork.Blockchain.GetByIdAsync(id);
-        if(blockchain == null)
+        if (blockchain == null)
             return NotFound();
         _unitOfWork.Blockchain.Remove(blockchain);
         await _unitOfWork.SaveAsync();
